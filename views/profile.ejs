@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+    <title>Bo</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; word-wrap:break-word; }
+    </style>
+
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+        <div class="text-right"><a href="/auth/logout" class="text-right btn btn-default btn-sm">Logout</a></div>
+    </div>
+
+    <div class="row">
+
+        <!-- BO INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-user"></span> Bo</h3>
+
+                <% if (user.local.email) { %>
+                    <p>
+                        <strong>id</strong>: <%= user._id %><br>
+                        <strong>email</strong>: <%= user.local.email %><br>
+                    </p>
+                    
+                    <a href="/auth/unlink/local" class="btn btn-default">Unlink</a>
+	            <% } else { %>
+	                    <a href="/auth/connect/local" class="btn btn-default">Connect Local</a>
+	            <% } %>
+
+
+            </div>
+        </div>
+
+        <!-- FACEBOOK INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+
+                <!-- check if the user has this token (is the user authenticated with this social account) -->
+                <% if (user.facebook.token) { %>
+                    <p>
+                        <strong>email</strong>: <%= user.facebook.email %><br>
+                        <strong>name</strong>: <%= user.facebook.name %><br>
+                    </p>
+
+                    <a href="/auth/unlink/facebook" class="btn btn-primary">Unlink</a>
+                <% } else { %>
+                    <a href="/auth/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+                <% } %>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-dm-12">
+		<form action="/profile" method="post">
+	       
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Basic Info</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>Name:</label>
+				            <input type="text" class="form-control" name="name" value='<%= profile.name %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>Birth Date:</label>
+			                <input type='text' class="form-control" name="birthdate" value='<%= profile.birthdate %>'/>
+					    </div>
+					    <div class="form-group">
+					    	<label>Gender:</label>
+					    	<% if (profile.gender && profile.gender == 'M') { %>
+				                <label class="radio-inline"><input type="radio" name="gender" value="M" checked>Male</label>
+								<label class="radio-inline"><input type="radio" name="gender" value="F">Female</label>
+							<% } else if (profile.gender && profile.gender == 'F') {%>
+								<label class="radio-inline"><input type="radio" name="gender" value="M">Male</label>
+								<label class="radio-inline"><input type="radio" name="gender" value="F" checked>Female</label>
+							<% } else { %>
+								<label class="radio-inline"><input type="radio" name="gender" value="M">Male</label>
+								<label class="radio-inline"><input type="radio" name="gender" value="F">Female</label>
+							<% } %>
+					    </div>
+				   </div>
+				</div>
+
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Work</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>Company:</label>
+				            <input type="text" class="form-control" name="work_company" value='<%= profile.work.length > 0 ? profile.work[0].company : '' %>'>
+					    </div>
+					    <div class="form-group">
+				        	<label>Title:</label>
+				            <input type="text" class="form-control" name="work_title" value='<%= profile.work.length > 0 ? profile.work[0].title : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>Location:</label>
+			                <input type='text' class="form-control" name="work_location" value='<%= profile.work.length > 0 ? profile.work[0].location : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>From:</label>
+			                <input type='text' class="form-control" name="work_from" value='<%= profile.work.length > 0 ? profile.work[0].from : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>To:</label>
+			                <input type='text' class="form-control" name="work_to" value='<%= profile.work.length > 0 ? profile.work[0].to : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>More about this job?</label>
+			                <textarea type='textarea' class="form-control" rows="5" name="work_description"><%= profile.work.length > 0 ? profile.work[0].description : '' %></textarea>
+					    </div>
+				   </div>
+				</div>
+
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Education</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>College:</label>
+				            <input type="text" class="form-control" name="edu_school" value='<%= profile.education.length > 0 ? profile.education[0].school : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>What did you study:</label>
+			                <input type='text' class="form-control" name="edu_major" value='<%= profile.education.length > 0 ? profile.education[0].major : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>From:</label>
+			                <input type='text' class="form-control" name="edu_from" value='<%= profile.education.length > 0 ? profile.education[0].from : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>To:</label>
+			                <input type='text' class="form-control" name="edu_to" value='<%= profile.education.length > 0 ? profile.education[0].to : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>Have fun there?</label>
+			                <textarea class="form-control" rows="5" name="edu_description"><%= profile.education.length > 0 ? profile.education[0].description : '' %></textarea>
+					    </div>
+				   </div>
+				</div>
+
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Places you've lived</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>Location:</label>
+				            <input type="text" class="form-control" name="live_location" value='<%= profile.placesLived.length > 0 ? profile.placesLived[0].location : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>From:</label>
+			                <input type='text' class="form-control" name="live_from" value='<%= profile.placesLived.length > 0 ? profile.placesLived[0].from : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>To:</label>
+			                <input type='text' class="form-control" name="live_to" value='<%= profile.placesLived.length > 0 ? profile.placesLived[0].to : '' %>'>
+					    </div>
+					    <div class="form-group">
+					    	<label>Any memory there?</label>
+			                <textarea class="form-control" rows="5" name="live_description"><%= profile.placesLived.length > 0 ? profile.placesLived[0].description : '' %></textarea>
+					    </div>
+				   </div>
+				</div>
+
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Languages you speak</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>Language:</label>
+				            <input type="text" class="form-control" name="language" value='<%= profile.languages.length > 0 ? profile.languages[0].language : '' %>'>
+					    </div>
+					</div>
+				</div>
+
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Professional skills</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>Skill:</label>
+				            <input type="text" class="form-control" name="professionalSkill" value='<%= profile.professionalSkills.length > 0 ? profile.professionalSkills[0].professionalSkill : '' %>'>
+					    </div>
+					</div>
+				</div>
+
+				<div class="panel panel-default">
+				   <div class="panel-heading">
+				     	<h3 class="text-primary">Interests</h3>
+				   </div>
+				   <div class="panel-body">
+				    	<div class="form-group">
+				        	<label>Interest:</label>
+				            <input type="text" class="form-control" name="interest" value='<%= profile.interests.length > 0 ? profile.interests[0].interest : '' %>'>
+					    </div>
+					</div>
+				</div>
+
+		        <button type="submit" class="btn btn-default btn-lg pull-right">Update</button>
+	    </form>
+	</div>
+</div>
+</body>
+</html>
