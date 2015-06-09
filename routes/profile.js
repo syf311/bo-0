@@ -5,7 +5,25 @@ var router = express.Router();
 var Profile = require('../models/profile');
 var facebook = require('../providers/facebook');
 
+router.use('/api/user/:userId/profile', auth.isLoggedIn)
 router.use('/profile', auth.isLoggedIn);
+
+router.get('/api/user/:userId/profile', function(req, res) {
+	if (req.user._id !=  req.params.userId) {
+		res.status(403).json({ error: 'Operation forbidden' })
+	} else {
+		Profile.findOne({ 'userId': req.user._id }, function(err, profile){
+			if(err)
+				res.send(err);
+			if (!profile) {
+				profile = new Profile();
+				profile.userId = req.user._id;
+			}
+
+			res.send({ user: req.user, profile: profile });
+		});
+	}
+});
 
 router.get('/profile', function(req, res) {
 	Profile.findOne({ 'userId': req.user._id }, function(err, profile){
@@ -21,6 +39,18 @@ router.get('/profile', function(req, res) {
 		  profile: profile
 		});
 	});
+});
+
+router.post('/api/user/:userId/profile', function(req, res) {
+	if (req.user._id !=  req.params.userId) {
+		res.status(403).json({ error: 'Operation forbidden' })
+	} else {
+		Profile.findByIdAndUpdate(req.body._id, req.body, function(err, profile) {
+			if(err)
+				res.send(err);
+			res.end();
+		});
+	}
 });
 
 router.post('/profile', function(req, res) {

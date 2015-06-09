@@ -1,0 +1,196 @@
+<div class="page-header text-center">
+    <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+    <div class="text-right"><a ng-href="#" class="text-right btn btn-default btn-sm" ng-click="logout()">Logout</a></div>
+</div>
+
+<div class="row">
+
+    <!-- BO INFORMATION -->
+    <div class="col-sm-6">
+        <div class="well">
+            <h3><span class="fa fa-user"></span> Bo</h3>
+            <div ng-show="user.local.email">
+            	<p>
+                    <strong>id</strong>: {{user._id}}<br>
+                    <strong>email</strong>: {{user.local.email}}<br>
+                </p>
+                
+                <a href="/auth/unlink/local" class="btn btn-default">Unlink</a>
+            </div>
+            <div ng-hide="user.local.email">
+            	<a href="/auth/connect/local" class="btn btn-default">Connect Local</a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FACEBOOK INFORMATION -->
+    <div class="col-sm-6">
+        <div class="well">
+            <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+
+            <!-- check if the user has this token (is the user authenticated with this social account) -->
+            <div ng-show="user.facebook.token">
+            	<p>
+                    <strong>email</strong>: {{ user.facebook.email }}<br>
+                    <strong>name</strong>: {{ user.facebook.name }}<br>
+                </p>
+
+                <a href="/auth/unlink/facebook" class="btn btn-primary">Unlink</a>
+            </div>
+			<div ng-hide="user.facebook.token">
+				<a href="/auth/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+			</div>
+
+        </div>
+    </div>
+</div>
+
+<div>
+	<form ng-submit="updateProfile()">
+       
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Basic Info</h3>
+		   </div>
+		   <div class="panel-body">
+		    	<div class="form-group">
+		        	<label>Name:</label>
+		            <input type="text" class="form-control" ng-model="profile.name">
+			    </div>
+			    <div class="form-group">
+			    	<label>Birth Date:</label>
+	                <input type='text' class="form-control" ng-model="profile.birthdate"/>
+			    </div>
+			    <div class="form-group">
+			    	<label>Gender:</label>
+					<label class="radio-inline"><input type="radio" ng-model="profile.gender" value="M">Male</label>
+					<label class="radio-inline"><input type="radio" ng-model="profile.gender" value="F">Female</label>
+			    </div>
+		   </div>
+		</div>
+
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Work</h3>
+		   </div>
+		   <div class="panel-body" ng-repeat="work in profile.work | orderBy:'from':true">
+		    	<div class="form-group">
+		        	<label>Company:</label>
+		            <input type="text" class="form-control" ng-model="work.company">
+			    </div>
+
+			    <div class="form-group">
+		        	<label>Title:</label>
+		            <input type="text" class="form-control" ng-model="work.title">
+			    </div>
+			    <div class="form-group">
+			    	<label>Location:</label>
+	                <input type='text' class="form-control"  ng-model="work.location">
+			    </div>
+			    <div class="form-group">
+			    	<label>From:</label>
+	                <input type='text' class="form-control" ng-model="work.from">
+			    </div>
+			    <div class="form-group">
+			    	<label>To:</label>
+	                <input type='text' class="form-control" ng-model="work.to">
+			    </div>
+			    <div class="form-group">
+			    	<label>More about this job?</label>
+	                <textarea type='textarea' class="form-control" rows="5" ng-model="work.description"></textarea>
+			    </div>
+		   </div>
+		</div>
+
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Education</h3>
+		   </div>
+		   <div class="panel-body" ng-repeat="edu in profile.education | orderBy:'from':true">
+		    	<div class="form-group">
+		        	<label>College:</label>
+		            <input type="text" class="form-control" ng-model="edu.school">
+			    </div>
+			    <div class="form-group">
+			    	<label>What did you study:</label>
+	                <input type='text' class="form-control" ng-model="edu.major">
+			    </div>
+			    <div class="form-group">
+			    	<label>From:</label>
+	                <input type='text' class="form-control" ng-model="edu.from">
+			    </div>
+			    <div class="form-group">
+			    	<label>To:</label>
+	                <input type='text' class="form-control" ng-model="edu.to">
+			    </div>
+			    <div class="form-group">
+			    	<label>Have fun there?</label>
+	                <textarea class="form-control" rows="5" ng-model="edu.description"></textarea>
+			    </div>
+		   </div>
+		</div>
+
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Places you've lived</h3>
+		   </div>
+		   <div class="panel-body" ng-repeat="live in profile.placesLived | orderBy:'from':true">
+		    	<div class="form-group">
+		        	<label>Location:</label>
+		            <input type="text" class="form-control" ng-model="live.location">
+			    </div>
+			    <div class="form-group">
+			    	<label>From:</label>
+	                <input type='text' class="form-control" ng-model="live.from">
+			    </div>
+			    <div class="form-group">
+			    	<label>To:</label>
+	                <input type='text' class="form-control" ng-model="live.to">
+			    </div>
+			    <div class="form-group">
+			    	<label>Any memory there?</label>
+	                <textarea class="form-control" rows="5" ng-model="live.description"></textarea>
+			    </div>
+		   </div>
+		</div>
+
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Languages you speak</h3>
+		   </div>
+		   <div class="panel-body" ng-repeat="lang in profile.languages">
+		    	<div class="form-group">
+		        	<label>Language:</label>
+		            <input type="text" class="form-control" ng-model="lang.language">
+			    </div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Professional skills</h3>
+		   </div>
+		   <div class="panel-body" ng-repeat="skill in profile.professionalSkills">
+		    	<div class="form-group">
+		        	<label>Skill:</label>
+		            <input type="text" class="form-control" ng-model="skill.professionalSkill">
+			    </div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+		   <div class="panel-heading">
+		     	<h3 class="text-primary">Interests</h3>
+		   </div>
+		   <div class="panel-body">
+		    	<div class="form-group" ng-repeat="interest in profile.interests">
+		        	<label>Interest:</label>
+		            <input type="text" class="form-control" ng-model="interest.interest">
+			    </div>
+			</div>
+		</div>
+
+        <input type="submit" class="btn btn-default btn-lg pull-right" value="Update">
+    </form>
+</div>

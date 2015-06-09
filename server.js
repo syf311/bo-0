@@ -11,14 +11,22 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var session = require('express-session');
+
+var expressJwt = require('express-jwt');
+
 var dbConfig = require('./config/database');
 mongoose.connect(dbConfig.url);
+mongoose.set('debug', true);
 
 require('./config/passport')(passport);
 
 var index = require('./routes/index');
-var auth = require('./routes/auth')(passport);;
-var profile = require('./routes/profile');
+//var auth = require('./routes/auth')(passport);
+var auth = require('./routes/auth');
+//var profile = require('./routes/profile');
+var account = require('./routes/secure/account');
+var profile = require('./routes/secure/profile');
+var group = require('./routes/secure/group');
 
 var app = express();
 
@@ -33,6 +41,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'bower_components')));
+app.use(express.static(path.join(__dirname, 'node_modules')));
 
 app.use(session({
   secret: 'keyboard cat'
@@ -41,9 +51,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use('/', index, profile);
+app.use('/', index);
 app.use('/auth', auth);
-//app.use('/profile', profile);
+//app.use('/auth2', auth2);
+var authUtil = require('./utils/auth');
+app.use('/secure', authUtil.isLoggedIn, account, profile);
+app.use('/api', group);
+//app.use('/secure', expressJwt({ secret: jwtConfig.secret }));
+
+//var jwtConfig = require('./config/jwt');
+//app.use('/secure/api', expressJwt({ secret: jwtConfig.secret }), secureApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,23 +75,14 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    res.status(err.status || 500).send({ message: err.message, error: err });
   });
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  res.status(err.status || 500).send({ message: err.message});
 });
-
 
 module.exports = app;

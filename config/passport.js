@@ -62,10 +62,10 @@ module.exports = function(passport) {
 	            	user.local.email = email;
 	            	user.local.password = user.generateHash(password);
 
-	            	user.save(function(err) {
+	            	user.save(function(err, savedUser) {
 	            		if (err)
 	            			throw err;
-	            		return done(null, user);
+	            		return done(null, savedUser);
 	            	});
 	            } 
 
@@ -80,10 +80,10 @@ module.exports = function(passport) {
 	                newUser.local.password = newUser.generateHash(password);
 
 	                // save the user
-	                newUser.save(function(err) {
+	                newUser.save(function(err, savedUser) {
 	                    if (err)
 	                        throw err;
-	                    return done(null, newUser);
+	                    return done(null, savedUser);
 	                });
 	            }
 

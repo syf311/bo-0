@@ -1,0 +1,7 @@
+{
+  "name": "bo",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular-xeditable": "~0.1.9"
+  }
+}
